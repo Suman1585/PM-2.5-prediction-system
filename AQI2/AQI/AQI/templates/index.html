@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Air Quality Prediction</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@5.15.4/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+        }
+
+        .navbar {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .card {
+            border: none;
+            margin-top: 20px;
+        }
+
+        .form-row label {
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .alert-danger {
+            margin-top: 20px;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-row input {
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 12px;
+            width: 100%;
+        }
+
+        .form-row input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .suggestion-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e2f4e2;
+            border: 1px solid #28a745;
+            color: #155724;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Air Quality Prediction</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <h2 class="text-center mb-4">Predict PM2.5 Level</h2>
+
+                <form method="POST">
+                    <div class="card p-4 shadow-sm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="co">CO</label>
+                                <input type="number" class="form-control" id="co" name="co" step="any" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="no">NO</label>
+                                <input type="number" class="form-control" id="no" name="no" step="any" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="no2">NO2</label>
+                                <input type="number" class="form-control" id="no2" name="no2" step="any" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="o3">O3</label>
+                                <input type="number" class="form-control" id="o3" name="o3" step="any" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="so2">SO2</label>
+                                <input type="number" class="form-control" id="so2" name="so2" step="any" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="pm10">PM10</label>
+                                <input type="number" class="form-control" id="pm10" name="pm10" step="any" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="nh3">NH3</label>
+                                <input type="number" class="form-control" id="nh3" name="nh3" step="any" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group text-center mb-3">
+                            <button type="submit" class="btn btn-primary btn-block">Get Predictions</button>
+                        </div>
+                    </div>
+                </form>
+
+                {% if predictions %}
+                <div class="card mt-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Prediction Results</h5>
+                        <table class="table table-bordered">
+                            <thead style="background-color: cadetblue;">
+                                <tr>
+                                    <th scope="col">Model</th>
+                                    <th scope="col">t+1</th>
+                                    <th scope="col">t+2</th>
+                                    <th scope="col">t+3</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>LSTM</td>
+                                    <td>{{ predictions['LSTM'][0] }}</td>
+                                    <td>{{ predictions['LSTM'][1] }}</td>
+                                    <td>{{ predictions['LSTM'][2] }}</td>
+                                </tr>
+                                <tr>
+                                    <td>GRU</td>
+                                    <td>{{ predictions['GRU'][0] }}</td>
+                                    <td>{{ predictions['GRU'][1] }}</td>
+                                    <td>{{ predictions['GRU'][2] }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Transformer</td>
+                                    <td>{{ predictions['Transformer'][0] }}</td>
+                                    <td>{{ predictions['Transformer'][1] }}</td>
+                                    <td>{{ predictions['Transformer'][2] }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {% if suggestion %}
+                <div class="suggestion-box">
+                    <strong>Suggested Action:</strong> {{ suggestion }}
+                </div>
+                {% endif %}
+                {% elif error %}
+                <div class="alert alert-danger mt-4" role="alert">
+                    <strong>Error!</strong> {{ error }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center">
+        <p>© 2025 Air Quality Prediction System. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

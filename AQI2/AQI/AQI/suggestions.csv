@@ -1,0 +1,7 @@
+PM2.5 Range,Suggestion
+0-50,Air quality is good. Continue as usual.
+51-100,Moderate pollution. Limit outdoor activities.
+101-150,Unhealthy for sensitive groups.
+151-200,Unhealthy. Stay indoors if possible.
+201-300,Very unhealthy. Avoid all outdoor activities.
+301-500,Hazardous. Remain indoors and use masks.
